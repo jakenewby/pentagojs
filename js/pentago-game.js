@@ -1,5 +1,5 @@
 /*
-File Name: board.js
+File Name: pentago-game.js
 Author: Jake Newby
 
 This game was created in my spare time as a project to test my still budding
@@ -8,10 +8,12 @@ way that you wish, but please leave any attributions and other project meta
 in tact.  Thanks!
 */
 
-(function(){
+var game = (function(pentagoui){
 
-  var game = {};
-  game.board = [];
+  board = {};
+  board.players = pentagoui.players;
+
+  var sections = [];
 
   for(var  i=0; i<4; i++){
     var matrix = [];
@@ -21,25 +23,22 @@ in tact.  Thanks!
           matrix[j][k] = null;
       }
     }
-    game.board[i] = matrix;
+    sections[i] = matrix;
   }
 
-  var s1 = game.board[0];
-  var s2 = game.board[1];
-  var s3 = game.board[2];
-  var s4 = game.board[3];
+  board.sections = sections;
 
   // rotate one of the four sections of the board
   // given a section and a direction
-  game.rotateSection = function (section, direction)
+  board.rotateSection = function (section, direction)
   {
-    if(game.IsOver())
+    if(game.isOver())
     {
 
     }
     else
     {
-
+      board.switchTurns();
     }
   }
 
@@ -47,14 +46,14 @@ in tact.  Thanks!
   // the player placing the token, the section, and the
   // location coordinates in that section that the token
   // is being placed.
-  game.placeToken = function (player, section, location)
+  board.placeToken = function (player, section, location)
   {
     var token = {};
     token.player = player;
     token.section = section;
     token.location = location;
 
-    var slot = board[section][token.location[0]][token.location[1]];
+    var slot = sections[section][token.location[0]][token.location[1]];
 
     if (slot != null)
     {
@@ -63,16 +62,40 @@ in tact.  Thanks!
     else
     {
       slot = token;
+
+      if(board.gameIsOver())
+      {
+
+      }
+      else
+      {
+        board.switchTurns();
+      }
+    }
+  }
+
+  // looks at the current player, and sets the current
+  // player variable to the other player to switch turns.
+  board.switchTurns() = function()
+  {
+    if (board.currentPlayer.id == board.players[0])
+    {
+      board.currentPlayer = board.players[1]
+    }
+    else
+    {
+      board.currentPlayer.id = board.players[0];
     }
   }
 
   // look through the board to see if there are any
   // five tokens in a row belonging to one player.
-  game.IsOver() = function()
+  // returns bool
+  board.gameIsOver() = function()
   {
 
   }
 
-  return game;
+  return board;
 
-}());
+}(pentagoui));
