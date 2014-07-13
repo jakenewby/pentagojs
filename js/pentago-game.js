@@ -8,13 +8,12 @@ way that you wish, but please leave any attributions and other project meta
 in tact.  Thanks!
 */
 
-var game = (function(pentagoui){
+var pentagogame = (function(pentagoui){
 
   board = {};
-  board.players = pentagoui.players;
 
+  // instantiate the pentago board to all empty
   var sections = [];
-
   for(var  i=0; i<4; i++){
     var matrix = [];
     for(var j=0; j<3; j++) {
@@ -25,8 +24,8 @@ var game = (function(pentagoui){
     }
     sections[i] = matrix;
   }
-
   board.sections = sections;
+  board.numSections = board.sections.length;
 
   // rotate one of the four sections of the board
   // given a section and a direction
@@ -46,14 +45,14 @@ var game = (function(pentagoui){
   // the player placing the token, the section, and the
   // location coordinates in that section that the token
   // is being placed.
-  board.placeToken = function (player, section, location)
+  board.placeToken = function (playerid, section, location)
   {
     var token = {};
-    token.player = player;
+    token.player = players[playerid];
     token.section = section;
     token.location = location;
 
-    var slot = sections[section][token.location[0]][token.location[1]];
+    var slot = board.sections[section][token.location[0]][token.location[1]];
 
     if (slot != null)
     {
@@ -76,26 +75,45 @@ var game = (function(pentagoui){
 
   // looks at the current player, and sets the current
   // player variable to the other player to switch turns.
-  board.switchTurns() = function()
+  board.switchTurns = function()
   {
-    if (board.currentPlayer.id == board.players[0])
+    if (players.current == players[0])
     {
-      board.currentPlayer = board.players[1]
+      players.current = players[1];
     }
     else
     {
-      board.currentPlayer.id = board.players[0];
+      players.current = players[0];
     }
   }
 
   // look through the board to see if there are any
   // five tokens in a row belonging to one player.
   // returns bool
-  board.gameIsOver() = function()
+  board.gameIsOver = function()
   {
+    for(var i=0; i < board.numSections; i++)
+    {
+      if(board.sections[i] != null)
+      {
+        for(var j=0; j < 3; j++)
+        {
+          if(board.sections[i][j] != null)
+          {
+            for(var k=0; k < 3; k++)
+            {
+              if(board.sections[i][j][k] != null)
+              {
+                // there is a piece at [i][j][k].
 
+              }
+            }
+          }
+        }
+      }
+    }
   }
 
-  return board;
+  return board, players;
 
 }(pentagoui));

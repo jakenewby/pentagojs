@@ -14,6 +14,12 @@ var pentagoui = (function(document, window){
   var players = {};
   players.player1 = {};
   players.player2 = {};
+  players.current = null;
+
+  if (!players.current)
+  {
+    players.current = Math.floor(Math.random() * 2);
+  }
 
   // check if the canvas and the context have rendered properly
   if (canvas)
@@ -24,8 +30,7 @@ var pentagoui = (function(document, window){
     }
     else
     {
-      alert("Your browser is out-dated. \n".
-            "Please download an HTML5 compliant browser to continue.");
+      alert("Your browser seems to be out-dated. \n Please download an HTML5 compliant browser to continue.");
       return false;
     }
   }
@@ -40,25 +45,13 @@ var pentagoui = (function(document, window){
   var p2name = document.getElementById("player2name");
 
   // set player names & ids to objects
-  if (p1name)
-  {
-    if (p2name)
-    {
-      players.player2.id = 1;
-      players.player2.name = p2name;
-    }
-    else
-    {
-      // player2 name not found
-    }
-    players.player1.id = 0;
-    players.player1.name = p1name;
+  players.player1.id = 0;
+  players.player1.name = 'lorum';
 
-  }
-  else
-  {
-    // player1 name not found
-  }
+  players.player2.id = 1;
+  players.player2.name = 'ipsum';
+
+
 
   // set size and color of board
   context.fillStyle = "#FFF";
