@@ -109,30 +109,40 @@ var game = (function(players){
     // look through the board to see if there are any
     // five tokens in a row belonging to one player.
     // returns bool
-    function isGameOver()
+    function isGameOver(consecutiveTokens)
     {
       // game cannot be over if the number
-      // of tokens place is less than 10
-      if(self.numTokensPlaced() >= 10)
-      {
-        for(i=0; i < 3; i++)
+      // of tokens placed is less than 10
+        if(self.numTokensPlaced() >= 10)
         {
-            if(self.board[i] != null)
+            if(consecutiveTokens < 5)
             {
-                for(j=0; j < 3; j++)
+                for(i=0; i < 3; i++)
                 {
-                   if(self.board[i][j] != null)
-                   {
-                        return true;
-                   }
+                    if(self.board[i] != null)
+                    {
+                        for(j=0; j < 3; j++)
+                        {
+                            if(self.board[i][j] != null)
+                            { 
+                                if(self.board[i][j] == players.current)
+                                {
+                                    
+                                }
+                            }
+                        }
+                    }
                 }
             }
+            else
+            {
+                return true;   
+            }
+        }      
+        else
+        {
+            return false;
         }
-      }
-      else
-      {
-        return false;
-      }
     }
 
     return self;
