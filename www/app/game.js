@@ -11,30 +11,68 @@ in tact.  Thanks!
 var game = (function(players){
     
     var self = {};
+    self.players = players;
     self.numTokensPlaced = 0;
     
     // instantiate the pentago board to all empty
     self.board = [];
-    for(var i=0; i<6; i++)
+    for(var i = 0; i < 6; i++)
     {
         self.board[i] = [];
-        for(var j=0; j<6; j++) 
+        for(var j = 0; j < 6; j++) 
         {
           self.board[i][j] = null;
         }
     }
     
+    // axes of the board
+    self.axes = [];
+    
+    // rows and cols
+    for(var p = 0; p < 6; p++)
+    {
+        var col = [];
+        var row = [];
+        for(var q = 0; q < 6; q++)
+        {
+            col.push(self.board[p][q]);
+            row.push(self.board[q][p]);
+        }
+        self.axes.push(col);
+        self.axes.push(row);
+    }
+    
+    // diagonals (down->right)
+    self.axes.push([self.board[1][0], self.board[2][1], 
+                    self.board[3][2], self.board[4][3], self.board[5][4]]);
+               
+    self.axes.push([self.board[0][0], self.board[1][1],self.board[2][2], 
+                    self.board[3][3], self.board[4][4], self.board[5][5]]);
+    
+    self.axes.push([self.board[0][1], self.board[1][2],
+                    self.board[2][3], self.board[3][4], self.board[4][5]]);
+    
+    // diagonals (up->right)
+    self.axes.push([self.board[1][5], self.board[2][4], 
+                    self.board[3][3], self.board[4][2], self.board[5][1]]);
+    
+    self.axes.push([self.board[0][5], self.board[1][4], self.board[2][3],
+                    self.board[3][2], self.board[4][1], self.board[5][0]]);
+    
+    self.axes.push([self.board[0][4], self.board[1][3], 
+                    self.board[2][2], self.board[3][1], self.board[4][0]]);
+    
     // rotate one of the four sections of the board
     // given a section and a direction
     self.rotateSection = function (section, direction)
     {
-      if(isGameOver())
+      if(self.isGameOver())
       {
-
+          alert('game is over!');
       }
       else
       {
-        if(direction == 'clockwise')
+        if(direction === 'clockwise')
         {
           /*
             var newGrid = [];
@@ -61,20 +99,22 @@ var game = (function(players){
                 console.log(newGrid[i])
             }
             */
+            alert('rotated clockwise');
         }
         else
         {
-          // rotate counter clockwise
+            // rotate counter clockwise
+            alert('rotated counter clockwise');
         }
-        switchTurns();
+        self.switchTurns();
       }
     }
-
+    
     // place a token at a place on the board given
     // the player placing the token, the section, and the
     // location coordinates in that section that the token
     // is being placed.
-    self.placeToken = function(playerid, location)
+    self.placeToken = function(location)
     {
         if (self.board[location[0]][location[1]] != null)
         {
@@ -82,62 +122,60 @@ var game = (function(players){
         }
         else
         {
-            self.board[location[0]][location[1]] = playerid;
-            self.numTokensPlaced = self.numTokensPlaced + 1;
-            if(isGameOver())
-            {
-                alert('game is over!');
-            }
+            self.board[location[0]][location[1]] = self.players.current;
+            self.numTokensPlaced++;
         }
     }
 
     // looks at the current player, and sets the current
     // player variable to the other player to switch turns.
-    function switchTurns()
+    self.switchTurns = function()
     {
-      if (players.current == players[0])
+      if (self.players.current == 0)
       {
-        players.current = players[1];
+        self.players.current = 1;
       }
       else
       {
-        players.current = players[0];
+        self.players.current = 0;
       }
-      console.log(players.current);
+      console.log(self.players.current);
     }
 
     // look through the board to see if there are any
     // five tokens in a row belonging to one player.
     // returns bool
-    function isGameOver(consecutiveTokens)
+    self.isGameOver = function()
     {
       // game cannot be over if the number
       // of tokens placed is less than 10
-        if(self.numTokensPlaced() >= 10)
+        if(self.numTokensPlaced >= 9)
         {
-            if(consecutiveTokens < 5)
+            for(var i = 0; i < self.axes.length; i++)
             {
-                for(i=0; i < 3; i++)
+                var currAxisLen = self.axes[i].length;
+                var tokenCount = 0;
+                
+                if (tokenCount >= 5)
                 {
-                    if(self.board[i] != null)
+                    return true;
+                }
+                else
+                {
+                    for(var j = 0; j < currAxisLen; j++)
                     {
-                        for(j=0; j < 3; j++)
+                        if( self.axes[i][j] == players.current )
                         {
-                            if(self.board[i][j] != null)
-                            { 
-                                if(self.board[i][j] == players.current)
-                                {
-                                    
-                                }
-                            }
+                            tokenCount++;   
                         }
+
                     }
                 }
             }
-            else
-            {
-                return true;   
-            }
+            
+            // looked through the entire matrix, 
+            // no 5 tokens for one player in a line.
+            return false;
         }      
         else
         {
